@@ -1,0 +1,16 @@
+[unit]
+Description=Server for controlling TJU experimental lighting fixtures
+After=multi-user.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/Documents/tju-server/
+ExecStart=/usr/bin/python /home/pi/Documents/tju-server/main.py
+ExecStop=/usr/bin/python /home/pi/Documents/tju-server/ControlServerStop.py
+TimeoutStopSec=60
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-usr.target

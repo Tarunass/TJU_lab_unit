@@ -21,7 +21,7 @@ BUFFER_SIZE = 1000
 
 
 class LightServer(threading.Thread):
-    def __init__(self, address=("192.168.1.3", 50000), logger=None):
+    def __init__(self, address=("192.168.2.20", 50000), logger=None):
         self.logger = logger or logging.getLogger(__name__)
         self.logger.info("Initializing light control server")
         super(LightServer, self).__init__(name="LightServer")
@@ -33,7 +33,7 @@ class LightServer(threading.Thread):
         self.demo_mode = 2
 
         # API Setup
-        api.set_network('192.168.1')  # Select the base network address
+        api.set_network('192.168.2')  # Select the base network address
         self.logger.info("Performing API IP address discovery")
         self.ip_list = api.discover()
         self.logger.info("Discovered connections: %s" % str(self.ip_list))
@@ -278,7 +278,7 @@ if __name__ == '__main__':
     import logging.config
     logging.config.fileConfig("logging_config.ini")
 
-    ls = LightServer(("192.168.1.3", 50001))
+    ls = LightServer(("192.168.2.20", 50001))
     ls.start()
     try:
         while 1:

@@ -2,7 +2,7 @@
 import socket
 import sys
 
-TCP_IP = '192.168.1.3'
+TCP_IP = '192.168.2.20'
 # TCP_IP = "localhost"
 TCP_PORT = 60000
 BUFFER_SIZE = 1024

@@ -1,0 +1,16 @@
+[Unit]
+Description=Server for controlling keypad
+After=multi-user.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/Documents/tju-server/TelnetServer.py
+ExecStart=/usr/bin/python /home/pi/Documents/tju-server/TelnetServer.py
+ExecStop=/usr/bin/python /home/pi/Documents/tju-server/TelnetServerStop.py
+TimeoutStopSec=60
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

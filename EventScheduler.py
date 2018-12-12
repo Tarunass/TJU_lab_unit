@@ -8,8 +8,8 @@ import logging
 
 
 class EventScheduler(threading.Thread):
-    def __init__(self, event_list_file="Data.txt",
-                 address=("192.168.1.3", 50000),
+    def __init__(self, event_list_file="spreadsheets/Data.txt",
+                 address=("192.168.2.20", 50000),
                  logger=None):
         self.logger = logger or logging.getLogger(__name__)
         self.logger.info("Initializing event scheduler thread")
@@ -56,7 +56,7 @@ class EventScheduler(threading.Thread):
                         else:
                             self.logger.info("End of event list reached")
                             control_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                            control_conn.connect(("192.168.1.3", 60000))
+                            control_conn.connect(("192.168.2.20", 60000))
                             control_conn.send("end")
                             control_conn.close()
                             self._stop_sequence()
@@ -210,8 +210,8 @@ if __name__ == "__main__":
     logging.config.fileConfig("logging_config.ini")
 
     el = 'test_data.txt'
-    generate_test_file(el, 5)
-    es = EventScheduler(el, address=("192.168.1.3", 50001))
+#    generate_test_file(el, 5)
+    es = EventScheduler(el, address=("192.168.2.20", 50001))
     es.start()
 
     try:

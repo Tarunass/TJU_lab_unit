@@ -2,7 +2,7 @@ import time
 import api
 
 print("Setting API network")
-api.set_network("192.168.1")
+api.set_network("192.168.2")
 print("Discovering luminaire IP's")
 ip_list = api.discover()
 print("Luminaires found at ip address(es):", ip_list)

@@ -1,16 +1,17 @@
+#!/bin/sh
 import socket, threading
 import getpass
 import telnetlib
 import time
 import logging
-from pysnmp.hlapi import *
+#from pysnmp.hlapi import *
 from ColorTemperature import cct_dict
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-control_server_address = ("192.168.1.3", 60000)
-lighting_server_address = ("192.168.1.3", 50000)
+control_server_address = ("192.168.2.20", 60000)
+lighting_server_address = ("192.168.2.20", 50000)
 
 CCT = 3600
 LUX = 1600
@@ -194,10 +195,10 @@ def raritan_set(ch, val):
                                    val.prettyPrint()))
 
 
-def keypad_reset():
-    raritan_set(8, 2)
-    time.sleep(1)
-    raritan_set(8, 1)
+#def keypad_reset():
+#    raritan_set(8, 2)
+#    time.sleep(1)
+#    raritan_set(8, 1)
 
 
 def keypad_ping(tn_sock):
@@ -212,21 +213,21 @@ def keypad_ping(tn_sock):
             logger.error("Keypad unresponsive - resetting keypad")
             keypad_reset()
         finally:
-            time.sleep(1)
+            time.sleep(10)
 
 
 if __name__ == "__main__":
-    HOST = '192.168.1.3'
+    HOST = '192.168.2.20'
     PORT = 51000
 
-    KEYPAD_HOST = "192.168.1.6"
+    KEYPAD_HOST = "192.168.2.21"
     KEYPAD_PORT = "23"
 
     logger.info("Starting keypad service")
 
-    logger.debug("Resetting keypad")
-    keypad_reset()
-    time.sleep(1)
+#    logger.debug("Resetting keypad")
+#    keypad_reset()
+#    time.sleep(1)
 
     logger.debug("Creating socket to receive keypad messages")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -252,8 +253,8 @@ if __name__ == "__main__":
             # logger.info("Response from keypad: %s" % resp)
             logger.debug("Connected to keypad")
 #            tn.write("REBOOT\n")
-#             keep_alive = threading.Thread(target=keypad_ping, args=tn)
-#             keep_alive.start()
+            keep_alive = threading.Thread(target=keypad_ping, args=(tn,))
+            keep_alive.start()
 #             keypad_ping(tn)
 
             while True:  # wait for socket to connect

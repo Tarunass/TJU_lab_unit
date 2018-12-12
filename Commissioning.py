@@ -1,10 +1,11 @@
 import api
 import time
 
-api.set_network('192.168.1')
+api.set_network('192.168.2')
 ip_list = api.discover()
 print("API Discovery found the following fixture addresses: %s" % str(ip_list))
 
+print ip_list
 #api.sendMessageParallel(ip_list, "PS00000000000000000000000000000000")
 
 for ip in ip_list:
