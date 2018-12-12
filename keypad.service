@@ -5,9 +5,9 @@ After=multi-user.target
 [Service]
 Type=simple
 User=pi
-WorkingDirectory=/home/pi/Documents/tju-server/TelnetServer.py
-ExecStart=/usr/bin/python /home/pi/Documents/tju-server/TelnetServer.py
-ExecStop=/usr/bin/python /home/pi/Documents/tju-server/TelnetServerStop.py
+WorkingDirectory=/home/pi/Documents/TJU/
+ExecStart=/usr/bin/python /home/pi/Documents/TJU/TelnetServer.py
+ExecStop=/usr/bin/python /home/pi/Documents/TJU/TelnetServerStop.py
 TimeoutStopSec=60
 Restart=always
 RestartSec=5
