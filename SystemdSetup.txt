@@ -1,0 +1,3 @@
+all files from github needs to be copied in TJU directory
+files keypad.service and lighting-control-server.service needs to be copied to /etc/systemd/system/ directory
+
