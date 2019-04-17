@@ -98,13 +98,20 @@ class LightServer(threading.Thread):
                     SendToLight = self.ConvertRawIp(data)
                     self.logger.debug(SendToLight)
                     if SendToLight > 0:
-                        fix_number = int(SendToLight[0])
-                        if fix_number < len(self.ip_list):
-                            del SendToLight[0]
-                            self.logger.debug(self.ip_list[fix_number])
-                            api.set_all_drive_levels(
-                                self.ip_list[fix_number],
-                                map(float, SendToLight))
+			#AT 4/16/2019
+#                        del SendToLight[0]
+			msg = 'PS' + SendToLight[1] + SendToLight[2] + SendToLight[3] + SendToLight[4] + SendToLight[5] + SendToLight[6] + SendToLight[7] + SendToLight[8]
+		        self.logger.info(msg)
+			api.sendMessageParallel(self.task_fixtures, msg, tries=2, timeout=1.0) 
+			#map(float, SendToLight), tries=2, timeout=1.0)
+                        #fix_number = int(SendToLight[0])
+                        #if fix_number < len(self.ip_list):
+                        #    del SendToLight[0]
+                        #    self.logger.debug(self.ip_list[fix_number])
+                        #    api.set_all_drive_levels(
+                        #        self.ip_list[fix_number],
+                        #        map(float, SendToLight))
+			#AT ---
                     else:
                         self.logger.error('%s\n' % str(SendToLight))
                 else:
@@ -185,20 +192,45 @@ class LightServer(threading.Thread):
     def ConvertRawIp(self, data):
         data = data.strip().split()
         if len(data) == 10:
+	    TaskLightIsActive = True
             COL = []
             for x in range(1, 10):
                 try:
+		    #AT 4/16/2019
+                    if float(data[x]) == 0:
+			TaskLightIsActive = False
+		    else:
+			TaskLightIsActive = True
+		    #AT ---
                     if 0 <= float(data[x]) <= 100:
-                        COL.append('%f' % (float(data[x]) / 100))
+                        COL.append('%04x' % int(float(data[x]) * 655.35))
                     else:
                         self.logger.error('value %d is out of range' % x)
                         return -1
                 except:
                     self.logger.error('value %d is not a float' % x)
                     return -2
-            COL[0] = data[1]  # Address of fixture
-            SentToLight = COL
-            return SentToLight
+	    self.logger.info("status of the task light is %r" % TaskLightIsActive)
+	    if TaskLightIsActive:
+	        COL[0] = data[1]  # Address of fixture
+                SentToLight =  COL
+#                SentToLight = 'PS' + COL[2] + COL[3] + COL[4] + COL[5] + COL[6] + COL[7] + COL[8] + COL[9]
+                self.ip_list = self.experiment_fixtures + self.switch_fixtures
+                return SentToLight
+	    else:
+                self.ip_list = self.task_fixtures + self.experiment_fixtures + self.switch_fixtures
+		response = api.get_all_drive_levels_raw(self.experiment_fixtures[1])
+		COL = []
+		for x in range(0,9):
+		    try:
+			COL.append('%04x' % int(float(response[x])))
+		    except:
+			self.logger.error('value from the experiment fixture doesnt contain proper light level info')
+		SentToLight = [55] + COL
+		self.logger.info(SentToLight)
+		#SentToLight suppouse to be input from neighbor light fixture
+		return SentToLight
+
         else:
             self.logger.error('wrong amount of arguments, should be 8, received %d' % (
                   len(data) - 2))

@@ -28,9 +28,12 @@ class EventScheduler(threading.Thread):
         self.trans_length = 10  # Transition time between two events (seconds)
         self.trans_step = .1  # Transition step size (seconds) (min=3s)
         self.logger.info("Lighting event scheduler thread initialized")
-
+	#AT 4/16/2019
+	self.connected = False
+	#AT ---
     def run(self):
-        self._start_sequence()
+#        self._start_sequence()
+	self._event_list = self._parse_event_list()
         if not self._stop_event.isSet():
             for i in range(len(self._event_list)):
                 with self._ne_lock:
@@ -82,12 +85,12 @@ class EventScheduler(threading.Thread):
                               % (str(msg.errno), str(msg.args[1])))
             self.logger.info("Stopping event scheduler thread")
             self.stop()
-        self.logger.info("Parsing event list")
-        self._event_list = self._parse_event_list()
-        if not self._event_list:
-            self.logger.error("No event list - exiting event scheduler "
-                              "thread execution")
-            sys.exit()
+        #self.logger.info("Parsing event list")
+        #self._event_list = self._parse_event_list()
+        #if not self._event_list:
+        #    self.logger.error("No event list - exiting event scheduler "
+        #                      "thread execution")
+        #    sys.exit()
         # Insert any additional start-up sequence for event scheduler
 
     def _stop_sequence(self):
@@ -95,17 +98,30 @@ class EventScheduler(threading.Thread):
         # Insert any additional stop sequence for event scheduler
 
     def _execute_event(self, vals):
+        #AT 4/16/2019
+	self.logger.info("Connecting to light server")
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	self.connected = False
+	while not self.connected:
+	    try:
+	        s.connect((self.light_server_address))
+		self.connected = True
+	    except:
+		time.sleep(1)
+	#AT ---
         log_str = "Executing event: " + ' '.join(str(v) for v in vals)
         self.logger.info(log_str)
         msg = "SetRawAll {} {} {} {} {} {} {} {}".format(*vals[1:]).encode()
         self.logger.debug(msg)
         try:
-            self._conn.send(msg)
+            s.send(msg)
         except socket.error as msg:
             self.logger.error(msg)
             if msg.errno == 32:
                 self.stop()
-
+	#AT 4/16/2019
+	s.close()
+	#AT ---
     def _transition(self, start_vals, end_vals):
         # print("current state: ", start_vals)
         # print("next state: ", end_vals)

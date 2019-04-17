@@ -1,0 +1,30 @@
+[12-18-18 07:35:17.799]  [     TJUControl]  [    INFO]: Received demo command, executing demo sequence
+[12-18-18 07:35:17.803]  [     TJUControl]  [    INFO]: Connecting to relay socket at 192.168.2.41, port 50003
+[12-18-18 07:35:17.806]  [     TJUControl]  [   ERROR]: Error sending message to relay: [Errno 111] Connection refused
+[12-18-18 07:35:17.808]  [    LightServer]  [    INFO]: Turning on all fixtures for demo mode
+[12-18-18 07:35:17.810]  [           root]  [    INFO]: 2018-12-18 07:35:17:Try #:1 addresses=['192.168.2.48', '192.168.2.47']
+[12-18-18 07:35:17.812]  [           root]  [    INFO]: 2018-12-18 07:35:17:sendMessageRaw(192.168.2.48): PS1ba50e2e24181b2fb28e636d17583340
+[12-18-18 07:35:17.814]  [           root]  [    INFO]: 2018-12-18 07:35:17:sendMessageRaw(192.168.2.47): PS1ba50e2e24181b2fb28e636d17583340
+[12-18-18 07:35:17.817]  [     TJUControl]  [    INFO]: Waiting for client
+[12-18-18 12:27:43.919]  [     TJUControl]  [    INFO]: Received stop command, executing stop sequence
+[12-18-18 12:27:43.921]  [ EventScheduler]  [    INFO]: Executing stop sequence
+[12-18-18 12:27:43.922]  [     TJUControl]  [    INFO]: Sending stop command to relay
+[12-18-18 12:27:43.923]  [     TJUControl]  [    INFO]: Connecting to relay socket at 192.168.2.41, port 50003
+[12-18-18 12:27:43.925]  [     TJUControl]  [   ERROR]: Error sending message to relay: [Errno 111] Connection refused
+[12-18-18 12:27:44.928]  [    LightServer]  [    INFO]: Turning off experiment fixtures
+[12-18-18 12:27:44.930]  [           root]  [    INFO]: 2018-12-18 12:27:44:Try #:1 addresses=['192.168.2.48', '192.168.2.47']
+[12-18-18 12:27:44.932]  [           root]  [    INFO]: 2018-12-18 12:27:44:sendMessageRaw(192.168.2.48): PS00000000000000000000000000000000
+[12-18-18 12:27:44.934]  [           root]  [    INFO]: 2018-12-18 12:27:44:sendMessageRaw(192.168.2.47): PS00000000000000000000000000000000
+[12-18-18 12:27:44.937]  [    LightServer]  [    INFO]: Turning on main switch controllable lights
+[12-18-18 12:27:44.939]  [     TJUControl]  [    INFO]: Waiting for client
+[12-18-18 12:27:45.922]  [     TJUControl]  [    INFO]: Received stop command, executing stop sequence
+[12-18-18 12:27:45.923]  [ EventScheduler]  [    INFO]: Executing stop sequence
+[12-18-18 12:27:45.927]  [     TJUControl]  [    INFO]: Sending stop command to relay
+[12-18-18 12:27:45.928]  [     TJUControl]  [    INFO]: Connecting to relay socket at 192.168.2.41, port 50003
+[12-18-18 12:27:45.929]  [     TJUControl]  [   ERROR]: Error sending message to relay: [Errno 111] Connection refused
+[12-18-18 12:27:46.931]  [    LightServer]  [    INFO]: Turning off experiment fixtures
+[12-18-18 12:27:46.932]  [           root]  [    INFO]: 2018-12-18 12:27:46:Try #:1 addresses=['192.168.2.48', '192.168.2.47']
+[12-18-18 12:27:46.933]  [           root]  [    INFO]: 2018-12-18 12:27:46:sendMessageRaw(192.168.2.48): PS00000000000000000000000000000000
+[12-18-18 12:27:46.934]  [           root]  [    INFO]: 2018-12-18 12:27:46:sendMessageRaw(192.168.2.47): PS00000000000000000000000000000000
+[12-18-18 12:27:46.937]  [    LightServer]  [    INFO]: Turning on main switch controllable lights
+[12-18-18 12:27:46.938]  [     TJUControl]  [    INFO]: Waiting for client

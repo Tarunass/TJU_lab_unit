@@ -502,7 +502,7 @@ def format(ip):
 
 ################## Discovery Stuff ##################
 
-maxDiscoverTime = 0.6
+maxDiscoverTime = 2
 luminaireTask = [0 for i in range (0,256)]
 luminaire_list = []
 

@@ -165,7 +165,7 @@ class TJUControl(threading.Thread):
         Execute stop sequence
         1. Stop "EventScheduler.py" script
         2. Return to standard mode
-        3. Send "Stop" to relay
+        3. Send "Stop" to relay 
 
         :return: None
         """

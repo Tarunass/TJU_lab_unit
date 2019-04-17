@@ -116,7 +116,35 @@ class ChatServer(threading.Thread):
                     self._set_lighting_condition(CCT, LUX)
 
             elif data == "DEMO_3":
-                pass
+                self.logger.debug("Demo_3")
+		if KeyPad_EN:
+		    msg = "SetRawAll 0 0 0 0 0 0 0 0"
+		    ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		    ls_sock.connect(lighting_server_address)
+		    ls_sock.send(msg)
+		    ls_sock.close()
+		    time.sleep(2)
+
+		    self.logger.debug("Start -> Dark to blue enriched light <-")
+		    for x in range(25, 1875, 25):
+			PS_a = cct_dict[10000][x]
+			PS_b = cct_dict[10000][x+25]
+			for xx in range(1, 2):
+		            PS_0 = str((PS_a[0] + (PS_b[0] - PS_a[0])*xx/2))
+			    PS_1 = str((PS_a[1] + (PS_b[1] - PS_a[1])*xx/2))
+			    PS_2 = str((PS_a[2] + (PS_b[2] - PS_a[2])*xx/2))
+			    PS_3 = str((PS_a[3] + (PS_b[3] - PS_a[3])*xx/2))
+			    PS_4 = str((PS_a[4] + (PS_b[4] - PS_a[4])*xx/2))
+			    PS_5 = str((PS_a[5] + (PS_b[5] - PS_a[5])*xx/2))
+			    PS_6 = str((PS_a[6] + (PS_b[6] - PS_a[6])*xx/2))
+			    PS_7 = str((PS_a[7] + (PS_b[7] - PS_a[7])*xx/2))
+			    msg = "SetRawAll" + ' ' + PS_0 + ' ' + PS_1 + ' ' + PS_2 + ' ' + PS_3 + ' ' + PS_4 + ' ' + PS_5 + ' ' + PS_6 + ' ' + PS_7
+			    ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			    ls_sock.connect(lighting_server_address)
+			    ls_sock.send(msg)
+			    ls_sock.close()
+			    time.sleep(0.01)
+		    self.logger.debug("Complete -> Dark to blue enriched light <-")
 
             elif data == "DEMO_4":
                 pass
