@@ -147,7 +147,86 @@ class ChatServer(threading.Thread):
 		    self.logger.debug("Complete -> Dark to blue enriched light <-")
 
             elif data == "DEMO_4":
-                pass
+		self.logger.debug("Demo_4")
+		if KeyPad_EN:
+   		    msg = "SetRawFix 0 11 0 0 0 0 0 0 0.01"
+		    self._send_message(msg)
+		    time.sleep(0.01)
+   		    msg = "SetRawFix 1 0 6 0 0 0 0 0 0.01"
+    		    self.logger.debug(msg)
+		    self._send_message(msg)
+		    time.sleep(0.01)
+   		    msg = "SetRawFix 2 0 0 14 0 0 0 0 0.01"
+    		    self.logger.debug(msg)
+		    self._send_message(msg)
+		    time.sleep(0.01)
+   		    msg = "SetRawFix 3 0 0 0 11 0 0 0 0.01"
+    		    self.logger.debug(msg)
+		    self._send_message(msg)
+		    time.sleep(0.01)
+   		    msg = "SetRawFix 4 0 0 0 0 70 0 0 0.01"
+    		    self.logger.debug(msg)
+		    self._send_message(msg)
+		    time.sleep(0.01)
+   		    msg = "SetRawFix 5 0 0 0 0 0 39 0 0.01"
+    		    self.logger.debug(msg)
+		    self._send_message(msg)
+		    time.sleep(0.01)
+   		    msg = "SetRawFix 6 0 0 0 0 0 0 9 0.01"
+    		    self.logger.debug(msg)
+		    self._send_message(msg)
+		    time.sleep(0.01)
+   		    msg = "SetRawFix 7 0 0 0 0 0 0 0 20"
+    		    self.logger.debug(msg)
+		    self._send_message(msg)
+		    time.sleep(5)
+		    for intens in range(0, 10):
+		    	msg = "SetRawAll " + str(10.8*intens/10) + " 0 0 0 0 0 0 0"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(5)
+		    for intens in range(0, 10):
+		    	msg = "SetRawAll 10.8 " + str(5.54*intens/10)+ " 0 0 0 0 0 0"
+		    	self._send_message(msg)
+			time.sleep(0.01)
+		    time.sleep(5)
+		    for intens in range(0, 10):
+		    	msg = "SetRawAll 10.8 5.54 " + str(14.1*intens/10) + " 0 0 0 0 0"
+		    	self._send_message(msg)
+			time.sleep(0.01)
+		    time.sleep(5)
+		    for intens in range(0, 10):
+		    	msg = "SetRawAll 10.8 5.54 14.1 " + str(10.62*intens/10) + " 0 0 0 0"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(5)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 " + str(69.75*intens/50) + " 0 0 0"
+		    	self._send_message(msg)
+			time.sleep(0.01)
+		    time.sleep(5)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 " + str(38.84*intens/50) + " 0 0"
+		    	self._send_message(msg)
+			time.sleep(0.01)
+		    time.sleep(5)
+		    for intens in range(0, 10):
+		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 38.84 " + str(9.12*intens/10) + " 0"
+		    	self._send_message(msg)
+			time.sleep(0.01)
+		    time.sleep(5)
+		    for intens in range(0, 10):
+		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 38.84 9.12 " + str(20.02*intens/10)
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    # Color gradient
+		   # for fix in range (0, 10):
+#
+#			msg = "SetRawFix " + str(fix) + " 1 2 3 4 5 6 7 8"
+ #   		        self.logger.debug(msg)
+#			self._send_message(msg)
+#		        time.sleep(0.05)
+
 
             elif "FAILED" in data.split():
                 self.logger.error("Error in keypad: %s" % data)
@@ -160,6 +239,13 @@ class ChatServer(threading.Thread):
         lock.acquire()
         clients.remove(self)
         lock.release()
+
+    def _send_message(self, msg):
+        ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        ls_sock.connect(lighting_server_address)
+	ls_sock.send(msg)
+	ls_sock.close()
+
 
     def _flash_color(self):
         # self.tn.write("LEDBLUES 5\n")

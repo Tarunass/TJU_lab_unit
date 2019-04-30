@@ -25,8 +25,8 @@ class EventScheduler(threading.Thread):
         self._ne_lock = threading.Lock()
         self._event_num = None
         self._en_lock = threading.Lock()
-        self.trans_length = 10  # Transition time between two events (seconds)
-        self.trans_step = .1  # Transition step size (seconds) (min=3s)
+        self.trans_length = 20  # Transition time between two events (seconds)
+        self.trans_step = 0.2  # Transition step size (seconds) (min=3s)
         self.logger.info("Lighting event scheduler thread initialized")
 	#AT 4/16/2019
 	self.connected = False
