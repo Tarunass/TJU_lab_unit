@@ -116,6 +116,13 @@ class LightServer(threading.Thread):
 			    api.set_all_drive_levels(self.ip_list[fix_number], map(float, SendToLight))
 		    else:
 			self.logger.error('%s\n' % str(SendToLight))
+		elif dataS[0] == 'PLAY':
+		    ScriptName = dataS[1]
+
+
+		    for ip in self.ip_list: 
+		        back = api.play_octa(ip, ScriptName)
+		        self.logger.debug(back)
                 else:
                     self.logger.error("Unrecognized command at start of packet")
             except Exception as m:

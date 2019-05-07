@@ -31,6 +31,8 @@ class ChatServer(threading.Thread):
         global KeyPad_EN
         global CCT
         global LUX
+	global LightConditions
+	LightConditions = [0, 0, 0, 0, 0, 0, 0, 0]
 
         lock.acquire()
         clients.append(self)
@@ -118,33 +120,50 @@ class ChatServer(threading.Thread):
             elif data == "DEMO_3":
                 self.logger.debug("Demo_3")
 		if KeyPad_EN:
-		    msg = "SetRawAll 0 0 0 0 0 0 0 0"
-		    ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		    ls_sock.connect(lighting_server_address)
-		    ls_sock.send(msg)
-		    ls_sock.close()
-		    time.sleep(2)
 
-		    self.logger.debug("Start -> Dark to blue enriched light <-")
-		    for x in range(25, 1875, 25):
-			PS_a = cct_dict[10000][x]
-			PS_b = cct_dict[10000][x+25]
-			for xx in range(1, 2):
-		            PS_0 = str((PS_a[0] + (PS_b[0] - PS_a[0])*xx/2))
-			    PS_1 = str((PS_a[1] + (PS_b[1] - PS_a[1])*xx/2))
-			    PS_2 = str((PS_a[2] + (PS_b[2] - PS_a[2])*xx/2))
-			    PS_3 = str((PS_a[3] + (PS_b[3] - PS_a[3])*xx/2))
-			    PS_4 = str((PS_a[4] + (PS_b[4] - PS_a[4])*xx/2))
-			    PS_5 = str((PS_a[5] + (PS_b[5] - PS_a[5])*xx/2))
-			    PS_6 = str((PS_a[6] + (PS_b[6] - PS_a[6])*xx/2))
-			    PS_7 = str((PS_a[7] + (PS_b[7] - PS_a[7])*xx/2))
-			    msg = "SetRawAll" + ' ' + PS_0 + ' ' + PS_1 + ' ' + PS_2 + ' ' + PS_3 + ' ' + PS_4 + ' ' + PS_5 + ' ' + PS_6 + ' ' + PS_7
-			    ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			    ls_sock.connect(lighting_server_address)
-			    ls_sock.send(msg)
-			    ls_sock.close()
-			    time.sleep(0.01)
-		    self.logger.debug("Complete -> Dark to blue enriched light <-")
+            	    msg = "PLAY Day_of_sunlight.lso"
+               	    self.logger.debug("Msg: %s" % msg)
+            	    ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            	    ls_sock.connect(lighting_server_address)
+            	    ls_sock.send(msg)
+
+#                    self._set_lighting_condition(1600, 25)
+#		    time.sleep(0.01)
+
+#		    for indeks in range(1, 120):
+#			CCT = 1600+100*indeks
+#			INT = 25+25*indeks
+#			CCT_p = 1600+100*(indeks-1)
+#			INT_p = 25+25*(indeks-1)
+#		        self._set_lighting_condition_Fix(0, CCT, INT, CCT_p, INT_p)
+#			self._set_lighting_condition_Fix(1, CCT-1000, INT-200, CCT_p-1000, INT_p-200)
+#			self._set_lighting_condition_Fix(2, CCT-2000, INT-400, CCT_p-2000, INT_p-400)
+#			self._set_lighting_condition_Fix(3, CCT-2000, INT-400, CCT_p-2000, INT_p-400)
+#			self._set_lighting_condition_Fix(4, CCT-3000, INT-600, CCT_p-3000, INT_p-600)
+#			self._set_lighting_condition_Fix(5, CCT-3000, INT-600, CCT_p-3000, INT_p-600)
+#			self._set_lighting_condition_Fix(6, CCT-4000, INT-800, CCT_p-4000, INT_p-800)
+#			self._set_lighting_condition_Fix(7, CCT-5000, INT-900, CCT_p-5000, INT_p-900)
+#			self._set_lighting_condition_Fix(8, CCT-5000, INT-900, CCT_p-5000, INT_p-900)
+#		    indeks = 0
+#		    for indeks in range(1, 120):
+#			CCT = 15000-100*indeks
+#			INT = 2800-25*indeks
+#			INT=1000
+#		        self._set_lighting_condition_Fix(0, CCT, INT)
+#			self._set_lighting_condition_Fix(1, CCT-1000, INT-200)
+#			self._set_lighting_condition_Fix(2, CCT-2000, INT-400)
+#			self._set_lighting_condition_Fix(3, CCT-2000, INT-400)
+#			self._set_lighting_condition_Fix(4, CCT-3000, INT-600)
+#			self._set_lighting_condition_Fix(5, CCT-3000, INT-600)
+#			self._set_lighting_condition_Fix(6, CCT-4000, INT-800)
+#			self._set_lighting_condition_Fix(7, CCT-5000, INT-900)
+#			self._set_lighting_condition_Fix(8, CCT-5000, INT-900)
+
+	          #  	condition = cct_dict[CCT][INT]
+        	  #  	condition = [str(x) for x in condition]
+        	  #  	msg = "SetRawFix" + ' 0 ' + ' '.join(condition)
+        	  #  	self.logger.debug("Msg: %s" % msg)
+		  #  	self._send_message(msg)
 
             elif data == "DEMO_4":
 		self.logger.debug("Demo_4")
@@ -180,46 +199,88 @@ class ChatServer(threading.Thread):
     		    self.logger.debug(msg)
 		    self._send_message(msg)
 		    time.sleep(5)
-		    for intens in range(0, 10):
-		    	msg = "SetRawAll " + str(10.8*intens/10) + " 0 0 0 0 0 0 0"
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll " + str(10.8*intens/50) + " 0 0 0 0 0 0 0"
 		    	self._send_message(msg)
 		    	time.sleep(0.01)
-		    time.sleep(5)
-		    for intens in range(0, 10):
-		    	msg = "SetRawAll 10.8 " + str(5.54*intens/10)+ " 0 0 0 0 0 0"
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 10.8 " + str(5.54*intens/50)+ " 0 0 0 0 0 0"
 		    	self._send_message(msg)
 			time.sleep(0.01)
-		    time.sleep(5)
-		    for intens in range(0, 10):
-		    	msg = "SetRawAll 10.8 5.54 " + str(14.1*intens/10) + " 0 0 0 0 0"
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 10.8 5.54 " + str(14.1*intens/50) + " 0 0 0 0 0"
 		    	self._send_message(msg)
 			time.sleep(0.01)
-		    time.sleep(5)
-		    for intens in range(0, 10):
-		    	msg = "SetRawAll 10.8 5.54 14.1 " + str(10.62*intens/10) + " 0 0 0 0"
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 10.8 5.54 14.1 " + str(10.62*intens/50) + " 0 0 0 0"
 		    	self._send_message(msg)
 		    	time.sleep(0.01)
-		    time.sleep(5)
+		    time.sleep(3)
 		    for intens in range(0, 50):
 		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 " + str(69.75*intens/50) + " 0 0 0"
 		    	self._send_message(msg)
 			time.sleep(0.01)
-		    time.sleep(5)
+		    time.sleep(3)
 		    for intens in range(0, 50):
 		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 " + str(38.84*intens/50) + " 0 0"
 		    	self._send_message(msg)
 			time.sleep(0.01)
-		    time.sleep(5)
-		    for intens in range(0, 10):
-		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 38.84 " + str(9.12*intens/10) + " 0"
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 38.84 " + str(9.12*intens/50) + " 0"
 		    	self._send_message(msg)
 			time.sleep(0.01)
-		    time.sleep(5)
-		    for intens in range(0, 10):
-		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 38.84 9.12 " + str(20.02*intens/10)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 10.8 5.54 14.1 10.62 69.75 38.84 9.12 " + str(20.02*intens/50)
 		    	self._send_message(msg)
 		    	time.sleep(0.01)
-		    # Color gradient
+
+		    time.sleep(5)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll " + str(10.8*(50-intens)/50) + " 5.54 14.1 10.62 69.75 38.84 9.12 20.02"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 0 " + str(5.54*(50-intens)/50) + " 14.1 10.62 69.75 38.84 9.12 20.02"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 0 0 " + str(14.1*(50-intens)/50) + " 10.62 69.75 38.84 9.12 20.02"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 0 0 0 " + str(10.62*(50-intens)/50) + " 69.75 38.84 9.12 20.02"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 0 0 0 0 " + str(69.75*(50-intens)/50) + " 38.84 9.12 20.02"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 0 0 0 0 0 " + str(38.84*(50-intens)/50) + " 9.12 20.02"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 0 0 0 0 0 0 " + str(9.12*(50-intens)/50) + " 20.02"
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+		    time.sleep(3)
+		    for intens in range(0, 50):
+		    	msg = "SetRawAll 0 0 0 0 0 0 0 " + str(20.02*(50-intens)/50)
+		    	self._send_message(msg)
+		    	time.sleep(0.01)
+
+# Color gradient
 		   # for fix in range (0, 10):
 #
 #			msg = "SetRawFix " + str(fix) + " 1 2 3 4 5 6 7 8"
@@ -277,6 +338,31 @@ class ChatServer(threading.Thread):
         ls_sock.connect(lighting_server_address)
         ls_sock.send(msg)
         ls_sock.close()
+
+    def _set_lighting_condition_Fix(self, fix, temperature, intensity, temperature_p, intensity_p):
+	SetToLight = [0,0,0,0,0,0,0,0]
+        if (temperature > 1600) and (temperature < 5000) and (intensity > 25) and (intensity < 1900) and \
+		(temperature_p > 1600) and (temperature_p < 5000) and (intensity_p > 25) and (intensity_p < 1900):
+            condition = cct_dict[temperature][intensity]
+	    LightConditions = cct_dict[temperature_p][intensity_p]
+#            condition = [str(x) for x in condition]
+# Here smooth transition needs to be implemented
+            self.logger.debug("Condition ->$$$$$$: %s" % str(condition))
+
+	    for k in range (1, 6):
+	    	for i in range (0, 8):
+		    SetToLight[i]=float(condition[i])+(float(condition[i])-float(LightConditions[i]))*k/5
+
+	    	self.logger.debug(SetToLight)
+
+		SetToLight = [str(x) for x in SetToLight]
+            	msg = "SetRawFix" + ' ' + str(fix) + ' ' + ' '.join(SetToLight)
+            	self.logger.debug("Msg: %s" % msg)
+            	ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            	ls_sock.connect(lighting_server_address)
+            	ls_sock.send(msg)
+            	ls_sock.close()
+	    	time.sleep(0.01)
 
 
 def raritan_set(ch, val):
