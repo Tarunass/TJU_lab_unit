@@ -21,7 +21,7 @@ BUFFER_SIZE = 1000
 
 
 class LightServer(threading.Thread):
-    def __init__(self, address=("192.168.2.20", 50000), logger=None):
+    def __init__(self, address=("192.168.2.22", 50000), logger=None):
         self.logger = logger or logging.getLogger(__name__)
         self.logger.info("Initializing light control server")
         super(LightServer, self).__init__(name="LightServer")
@@ -121,6 +121,7 @@ class LightServer(threading.Thread):
 
 
 		    for ip in self.ip_list: 
+			back = api.stop_octa(ip)
 		        back = api.play_octa(ip, ScriptName)
 		        self.logger.debug(back)
                 else:
@@ -232,7 +233,7 @@ class LightServer(threading.Thread):
                 return SentToLight
 	    else:
                 self.ip_list = self.task_fixtures + self.experiment_fixtures + self.switch_fixtures
-		response = api.get_all_drive_levels_raw(self.experiment_fixtures[1])
+		response = api.get_all_drive_levels_raw(self.experiment_fixtures[0])
 		COL = []
 		for x in range(0,9):
 		    try:
@@ -368,7 +369,7 @@ if __name__ == '__main__':
     import logging.config
     logging.config.fileConfig("logging_config.ini")
 
-    ls = LightServer(("192.168.2.20", 50001))
+    ls = LightServer(("192.168.2.22", 50000))
     ls.start()
     try:
         while 1:

@@ -10,12 +10,12 @@ from ColorTemperature import cct_dict
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-control_server_address = ("192.168.2.20", 60000)
-lighting_server_address = ("192.168.2.20", 50000)
+control_server_address = ("192.168.2.22", 60000)
+lighting_server_address = ("192.168.2.22", 50000)
 
 CCT = 3600
 LUX = 1600
-
+GLOBAL_LIGHT_CONDITIONS = [0, 0, 0, 0, 0, 0, 0, 0]
 
 class ChatServer(threading.Thread):
     def __init__(self, (socket, address), tn, logger=None):
@@ -32,6 +32,7 @@ class ChatServer(threading.Thread):
         global CCT
         global LUX
 	global LightConditions
+        global GLOBAL_LIGHT_CONDITIONS
 	LightConditions = [0, 0, 0, 0, 0, 0, 0, 0]
 
         lock.acquire()
@@ -82,13 +83,16 @@ class ChatServer(threading.Thread):
             elif data == "CCT_UP":
                 self.logger.debug("CCT+")
                 if KeyPad_EN:
+		    self.tn.write("BACKLIGHT 0\n")
+		    self.tn.write("DEVICE DISABLE 1\n")
                     # self._flash_color()
                     CCT = CCT + 400
                     if CCT > 10000:
                         CCT = 10000
                     self.logger.debug("CCT: %s; LUX: %s" % (CCT, LUX))
                     self._set_lighting_condition(CCT, LUX)
-
+		    self.tn.write("DEVICE ENABLE 1\n")
+		    self.tn.write("BACKLIGHT 100\n")
             elif data == "CCT_DOWN":
                 self.logger.debug("CCT-")
                 if KeyPad_EN:
@@ -111,63 +115,59 @@ class ChatServer(threading.Thread):
             elif data == "LUX_DOWN":
                 self.logger.debug("LUX-")
                 if KeyPad_EN:
-                    LUX = LUX - 200
-                    if LUX < 200:
-                        LUX = 200
-                    self.logger.debug("CCT: %s; LUX: %s" % (CCT, LUX))
-                    self._set_lighting_condition(CCT, LUX)
+		    self.tn.write("BACKLIGHT 0\n")
+                    KeyPad_EN = False
+         	    # 1 Off
+		    msg = "SetRawAll 0 0 0 0 0 0 0 0"
+		    self._send_message(msg)
+		    time.sleep(5)
+		    # 2 Slowley on to 1600k and 250 lum
+         	    GLOBAL_LIGHT_CONDITIONS = [0, 0, 0, 0, 0, 0, 0, 0]
+                    for i in range (0, 5):
+                      self._set_lighting_condition(1600, 50+i*50)
+		    # 3 go to 6000CCT and 1675K
+                    #time.sleep(5)
+		    for p in range(0, 20):
+		      self._set_lighting_condition(1600+p*200, 250+p*75)
+		    time.sleep(20)
+		    # 4 go back to 1600K and 250lm
+		    for p in range(0, 20):
+		      self._set_lighting_condition(5400-p*200, 1675-p*75)
+		    time.sleep(5)
+		    # 5 go to dark
+                    for i in range (0, 10):
+                      self._set_lighting_condition(1600, 250-i*25)
+		    msg = "SetRawAll 0 0 0 0 0 0 0 0"
+		    self._send_message(msg)
+                    KeyPad_EN = True
+		    self.tn.write("BACKLIGHT 100\n")
+
+#                    LUX = LUX - 200
+#                    if LUX < 200:
+#                        LUX = 200
+#                    self.logger.debug("CCT: %s; LUX: %s" % (CCT, LUX))
+#                    self._set_lighting_condition(CCT, LUX)
 
             elif data == "DEMO_3":
                 self.logger.debug("Demo_3")
 		if KeyPad_EN:
-
+		    self.tn.write("BACKLIGHT 0\n")
+                    KeyPad_EN = False
             	    msg = "PLAY Day_of_sunlight.lso"
                	    self.logger.debug("Msg: %s" % msg)
             	    ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             	    ls_sock.connect(lighting_server_address)
             	    ls_sock.send(msg)
-
-#                    self._set_lighting_condition(1600, 25)
-#		    time.sleep(0.01)
-
-#		    for indeks in range(1, 120):
-#			CCT = 1600+100*indeks
-#			INT = 25+25*indeks
-#			CCT_p = 1600+100*(indeks-1)
-#			INT_p = 25+25*(indeks-1)
-#		        self._set_lighting_condition_Fix(0, CCT, INT, CCT_p, INT_p)
-#			self._set_lighting_condition_Fix(1, CCT-1000, INT-200, CCT_p-1000, INT_p-200)
-#			self._set_lighting_condition_Fix(2, CCT-2000, INT-400, CCT_p-2000, INT_p-400)
-#			self._set_lighting_condition_Fix(3, CCT-2000, INT-400, CCT_p-2000, INT_p-400)
-#			self._set_lighting_condition_Fix(4, CCT-3000, INT-600, CCT_p-3000, INT_p-600)
-#			self._set_lighting_condition_Fix(5, CCT-3000, INT-600, CCT_p-3000, INT_p-600)
-#			self._set_lighting_condition_Fix(6, CCT-4000, INT-800, CCT_p-4000, INT_p-800)
-#			self._set_lighting_condition_Fix(7, CCT-5000, INT-900, CCT_p-5000, INT_p-900)
-#			self._set_lighting_condition_Fix(8, CCT-5000, INT-900, CCT_p-5000, INT_p-900)
-#		    indeks = 0
-#		    for indeks in range(1, 120):
-#			CCT = 15000-100*indeks
-#			INT = 2800-25*indeks
-#			INT=1000
-#		        self._set_lighting_condition_Fix(0, CCT, INT)
-#			self._set_lighting_condition_Fix(1, CCT-1000, INT-200)
-#			self._set_lighting_condition_Fix(2, CCT-2000, INT-400)
-#			self._set_lighting_condition_Fix(3, CCT-2000, INT-400)
-#			self._set_lighting_condition_Fix(4, CCT-3000, INT-600)
-#			self._set_lighting_condition_Fix(5, CCT-3000, INT-600)
-#			self._set_lighting_condition_Fix(6, CCT-4000, INT-800)
-#			self._set_lighting_condition_Fix(7, CCT-5000, INT-900)
-#			self._set_lighting_condition_Fix(8, CCT-5000, INT-900)
-
-	          #  	condition = cct_dict[CCT][INT]
-        	  #  	condition = [str(x) for x in condition]
-        	  #  	msg = "SetRawFix" + ' 0 ' + ' '.join(condition)
-        	  #  	self.logger.debug("Msg: %s" % msg)
-		  #  	self._send_message(msg)
+		    time.sleep(60)
+                    KeyPad_EN = True
+		    self.tn.write("BACKLIGHT 100\n")
 
             elif data == "DEMO_4":
+
 		self.logger.debug("Demo_4")
 		if KeyPad_EN:
+		    self.tn.write("BACKLIGHT 0\n")
+                    KeyPad_EN = False
    		    msg = "SetRawFix 0 11 0 0 0 0 0 0 0.01"
 		    self._send_message(msg)
 		    time.sleep(0.01)
@@ -279,14 +279,9 @@ class ChatServer(threading.Thread):
 		    	msg = "SetRawAll 0 0 0 0 0 0 0 " + str(20.02*(50-intens)/50)
 		    	self._send_message(msg)
 		    	time.sleep(0.01)
+                    KeyPad_EN = True
+		    self.tn.write("BACKLIGHT 100\n")
 
-# Color gradient
-		   # for fix in range (0, 10):
-#
-#			msg = "SetRawFix " + str(fix) + " 1 2 3 4 5 6 7 8"
- #   		        self.logger.debug(msg)
-#			self._send_message(msg)
-#		        time.sleep(0.05)
 
 
             elif "FAILED" in data.split():
@@ -321,6 +316,9 @@ class ChatServer(threading.Thread):
         pass
 
     def _set_lighting_condition(self, temperature, intensity):
+	global GLOBAL_LIGHT_CONDITIONS
+	SetToLight = [100,100,100,100,100,100,100,100]
+
         if temperature < 1600:
             temperature = 1600
         elif temperature > 10000:
@@ -331,13 +329,22 @@ class ChatServer(threading.Thread):
             intensity = 1900
 
         condition = cct_dict[temperature][intensity]
-        condition = [str(x) for x in condition]
-        msg = "SetRawAll" + ' ' + ' '.join(condition)
-        self.logger.debug("Msg: %s" % msg)
+
         ls_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         ls_sock.connect(lighting_server_address)
-        ls_sock.send(msg)
+
+        for k in range (1, 21):
+	  for i in range (0, 8):
+	    SetToLight[i]=str(float(GLOBAL_LIGHT_CONDITIONS[i])+(float(condition[i])-float(GLOBAL_LIGHT_CONDITIONS[i]))*k/20)
+          #self.logger.debug(SetToLight)
+
+          msg = "SetRawAll" + ' ' + ' '.join(SetToLight)
+          ls_sock.send(msg)
+          time.sleep(0.02)
+
         ls_sock.close()
+	GLOBAL_LIGHT_CONDITIONS=condition
+
 
     def _set_lighting_condition_Fix(self, fix, temperature, intensity, temperature_p, intensity_p):
 	SetToLight = [0,0,0,0,0,0,0,0]
@@ -417,7 +424,7 @@ def keypad_ping(tn_sock):
 
 
 if __name__ == "__main__":
-    HOST = '192.168.2.20'
+    HOST = '192.168.2.22'
     PORT = 51000
 
     KEYPAD_HOST = "192.168.2.21"

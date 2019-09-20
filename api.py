@@ -196,7 +196,7 @@ def sendMessageRaw(ip, outMsg):
         telnetobj = telnetObj[ip]
         telnetobj.write(outMsg+'\r')
         info_tag = 'sendMessageRaw(%s): %s' % (ip, outMsg)
-        log_info(info_tag)
+        #log_info(info_tag)
         return 0
     except:
         try:
@@ -210,7 +210,7 @@ def sendMessageRaw(ip, outMsg):
 def sendMessage(ip, outMsg):
     try:
         info_tag = 'sendMessage(%s): %s' % (ip, outMsg)
-        log_info(info_tag)
+        #log_info(info_tag)
         sendMessageRaw(ip, outMsg)
         return getReply(ip)
     except:
@@ -269,7 +269,7 @@ def sendMessageParallel(hostip_list, outmsg, tries=3, timeout=2.0):
     while try_count < tries and len(worklist) > 0:
         try_count = try_count + 1
         infotag = 'Try #:%d addresses=%s' % (try_count, worklist)
-        log_info(infotag)
+        #log_info(infotag)
         # Make a list of all luminaires that haven't yet responded in worklist
         try:
             for ip in worklist:

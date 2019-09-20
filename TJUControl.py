@@ -11,9 +11,9 @@ import time
 class TJUControl(threading.Thread):
     def __init__(self, logger=None,
                        event_list_file="spreadsheets/Data.txt",
-                       control_address=("192.168.2.20", 60000),
-                       light_server_address=("192.168.2.20", 50000),
-                       relay_address=("192.168.2.41", 50003)):
+                       control_address=("192.168.2.22", 60000),
+                       light_server_address=("192.168.2.22", 50000),
+                       relay_address=("192.168.2.41", 50000)):
         self.logger = logger or logging.getLogger(__name__)
         self.logger.info("Initializing TJU Control thread")
         super(TJUControl, self).__init__(name="TJUControl")

@@ -3,7 +3,7 @@
 import TJUControl
 import logging
 
-logging.config.fileConfig("/home/pi/Documents/TJU/logging_config.ini")
+logging.config.fileConfig("/home/arunas/Documents/TJU/logging_config.ini")
 
 tju_control = TJUControl.TJUControl()
 tju_control.start()

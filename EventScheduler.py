@@ -9,7 +9,7 @@ import logging
 
 class EventScheduler(threading.Thread):
     def __init__(self, event_list_file="spreadsheets/Data.txt",
-                 address=("192.168.2.20", 50000),
+                 address=("192.168.2.22", 50000),
                  logger=None):
         self.logger = logger or logging.getLogger(__name__)
         self.logger.info("Initializing event scheduler thread")
@@ -25,8 +25,8 @@ class EventScheduler(threading.Thread):
         self._ne_lock = threading.Lock()
         self._event_num = None
         self._en_lock = threading.Lock()
-        self.trans_length = 20  # Transition time between two events (seconds)
-        self.trans_step = 0.2  # Transition step size (seconds) (min=3s)
+        self.trans_length = 100  # Transition time between two events (seconds)
+        self.trans_step = 0.1  # Transition step size (seconds) (min=3s)
         self.logger.info("Lighting event scheduler thread initialized")
 	#AT 4/16/2019
 	self.connected = False
